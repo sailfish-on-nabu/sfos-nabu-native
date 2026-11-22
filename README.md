@@ -6,6 +6,16 @@
 
 ## 镜像文件
 
+`dist/` 成品已于 2026-11-22 按当前源码重建，版本号保持 `5.3.0.21`。
+本次包含原生相机及拍照、SSC 加速度/方向桥接、扬声器高通滤波、
+铃音试听控制，以及匹配的新内核、模块和 initramfs。
+双击唤醒实验代码及配置也已打包，但最新真机测试仍未实现唤醒。
+
+SHA256、ext4、sparse/raw 一致性、启动镜像内容及 107 个适配文件的
+比对已通过，结果见 `dist/validation.json`。新镜像尚未进行真机启动
+或 QEMU 开机验证。后文调试记录中的“镜像尚未重建”描述记录当时的状态；
+当前成品内容以本节及最新验证记录为准。
+
 - `dist/sailfish-5.3.0.21-nabu-rootfs.sparse.img` 用于 fastboot 写入 userdata。
 - `dist/sailfish-5.3.0.21-nabu-rootfs.img` 是同一文件系统的 raw ext4 镜像，用于检查或直接块设备写入。初始容量为 4 GiB，首次启动扩展到所在分区的容量。
 - `dist/sailfish-5.3.0.21-nabu-boot.img` 使用 Android header v0，包含内核、追加的 nabu DTB 和安装版 initramfs。

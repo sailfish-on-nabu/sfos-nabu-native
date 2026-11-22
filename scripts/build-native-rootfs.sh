@@ -21,7 +21,8 @@ unshare --mount bash "$project/scripts/in-namespace.sh" "$guest" /bin/bash \
     /tmp/remove-android-packages.sh /tmp/excluded-packages.txt "/tmp/sfos-mainline-runtime-$image_version-1.aarch64.rpm"
 cp "$work/downloads/qt5-plugin-platform-eglfs-5.6.3+git60-1.19.10.jolla.aarch64.rpm" "$guest/tmp/"
 cp "$project/dist/sfos-nabu-native-$image_version-1.aarch64.rpm" "$guest/tmp/"
-unshare --mount bash "$project/scripts/in-namespace.sh" "$guest" /usr/bin/rpm -Uvh --replacepkgs \
+# Native QML adaptations also replace files supplied by the stock settings package.
+unshare --mount bash "$project/scripts/in-namespace.sh" "$guest" /usr/bin/rpm -Uvh --replacepkgs --replacefiles \
     /tmp/qt5-plugin-platform-eglfs-5.6.3+git60-1.19.10.jolla.aarch64.rpm \
     "/tmp/sfos-nabu-native-$image_version-1.aarch64.rpm"
 cp "$project/scripts/configure-native.sh" "$guest/tmp/"
