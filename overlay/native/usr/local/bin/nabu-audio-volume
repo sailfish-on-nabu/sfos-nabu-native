@@ -23,7 +23,7 @@ if not marker.exists():
             # tested lower host level; amplifier tuning is independent.
             subprocess.run(['pactl', 'set-sink-volume', sink, '10400'], check=True)
             marker.parent.mkdir(parents=True, exist_ok=True)
-            marker.write_text('hardware=-36dB software=10400\n')
+            marker.write_text('hardware=-30dB software=10400\n')
             print('Initialized nabu speaker volume with amplifier attenuation.')
             break
         time.sleep(1)
