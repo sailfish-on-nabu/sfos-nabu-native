@@ -1,0 +1,27 @@
+[
+  {
+    "url": "https://cdimage.ubuntu.com/ubuntu-base/releases/24.04/release/ubuntu-base-24.04.5-base-arm64.tar.gz",
+    "filename": "ubuntu-base-24.04.5-base-arm64.tar.gz",
+    "sha256": "a91d5a93010193712d346d761372b7c9db6dfcf093893161c64ca107f05914f2"
+  },
+  {
+    "filename": "nabu-firmware.pkg.tar.xz",
+    "url": "https://github.com/rodriguezst/arch-repo/releases/download/aarch64/linux-firmware-xiaomi-nabu-25.04.26-1-any.pkg.tar.xz",
+    "sha256": "bef43c32029902bc4c3c1b7c7007c6e5d954fe673933087a836b5a41b567bac9"
+  },
+  {
+    "filename": "weston_9.0.0-4ubuntu1_arm64.deb",
+    "url": "https://ports.ubuntu.com/ubuntu-ports/pool/universe/w/weston/weston_9.0.0-4ubuntu1_arm64.deb",
+    "sha256": "7b904685589991f3d1cab3882607efd8e1a15ada67ca7cdbd1314604a92dd89d"
+  },
+  {
+    "filename": "libweston-9-0_9.0.0-4ubuntu1_arm64.deb",
+    "url": "https://ports.ubuntu.com/ubuntu-ports/pool/universe/w/weston/libweston-9-0_9.0.0-4ubuntu1_arm64.deb",
+    "sha256": "9124edacf97052e00b01d21df25e73a9c182b29be59a67594dec00f8f39b9adc"
+  },
+  {
+    "filename": "qt5-plugin-platform-eglfs-5.6.3+git60-1.19.10.jolla.aarch64.rpm",
+    "url": "https://releases.jolla.com/releases/5.3.0.15/jolla/aarch64/oss/aarch64/qt5-plugin-platform-eglfs-5.6.3+git60-1.19.10.jolla.aarch64.rpm",
+    "sha256": "51e77ea7aadda0b9e44a89014aa7e1ecdff40d91ecd533ef485010f0df3289fa"
+  }
+]

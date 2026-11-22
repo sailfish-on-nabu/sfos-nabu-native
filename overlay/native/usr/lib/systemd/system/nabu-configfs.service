@@ -1,0 +1,11 @@
+[Unit]
+Description=Prepare nabu USB configfs gadget
+After=local-fs.target
+Before=usb-moded.service
+ConditionPathExists=/sys/class/udc
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/nabu-configfs
+RemainAfterExit=yes
+[Install]
+WantedBy=basic.target

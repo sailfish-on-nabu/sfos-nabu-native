@@ -1,0 +1,6 @@
+[Match]
+Name=ve-sailfish vb-sailfish
+
+[Network]
+Bridge=sfos0
+LinkLocalAddressing=no

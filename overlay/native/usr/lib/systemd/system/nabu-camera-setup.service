@@ -1,0 +1,14 @@
+[Unit]
+Description=Initialize native nabu camera routes
+After=systemd-udev-trigger.service
+Before=user@100000.service graphical.target
+ConditionPathExists=/sys/devices/platform/soc@0/ac4a000.cci
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/nabu-camera-setup
+RemainAfterExit=yes
+TimeoutStartSec=45
+
+[Install]
+WantedBy=multi-user.target

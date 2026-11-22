@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+set -euo pipefail
+export XDG_RUNTIME_DIR=/run/sfos-host
+install -d -m 0700 "$XDG_RUNTIME_DIR"
+rm -f "$XDG_RUNTIME_DIR/wayland-0" "$XDG_RUNTIME_DIR/wayland-0.lock"
+weston_arguments=(--backend=drm-backend.so --tty=7)
+guest_arguments=()
+if [[ ${SFOS_HEADLESS:-0} == 1 ]] || grep -aq 'linux,dummy-virt' /proc/device-tree/compatible; then
+    weston_arguments=(--backend=headless-backend.so --use-pixman --width=800 --height=1280)
+    guest_arguments+=(--setenv=LIBGL_ALWAYS_SOFTWARE=1)
+else
+    for attempt in $(seq 1 1200); do
+        [[ -e /dev/dri/card0 ]] && break
+        sleep 0.1
+    done
+    test -e /dev/dri/card0
+fi
+LD_LIBRARY_PATH=/opt/weston9/usr/lib/aarch64-linux-gnu:/opt/weston9/usr/lib/aarch64-linux-gnu/weston \
+    /opt/weston9/usr/bin/weston "${weston_arguments[@]}" \
+    --shell=/opt/weston9/usr/lib/aarch64-linux-gnu/weston/kiosk-shell.so \
+    --socket=wayland-0 --idle-time=0 --no-config --log=/var/log/sailfish-weston.log &
+weston_pid=$!
+trap 'kill "$weston_pid" 2>/dev/null || true' EXIT
+for attempt in $(seq 1 600); do
+    [[ -S "$XDG_RUNTIME_DIR/wayland-0" ]] && break
+    kill -0 "$weston_pid"
+    sleep 0.1
+done
+test -S "$XDG_RUNTIME_DIR/wayland-0"
+chmod 0666 "$XDG_RUNTIME_DIR/wayland-0"
+export SYSTEMD_NSPAWN_UNIFIED_HIERARCHY=0
+nspawn_arguments=(
+    --directory=/opt/sailfish/rootfs --machine=sailfish --boot
+    --network-bridge=sfos0 --console=pipe --settings=no --resolv-conf=off
+    --capability=CAP_SYS_TIME,CAP_WAKE_ALARM
+    --bind-ro="$XDG_RUNTIME_DIR/wayland-0:/run/sfos-host/wayland-0"
+    --bind-ro=/run/udev:/run/udev --bind-ro=/run/systemd/resolve:/run/host-resolve
+)
+if [[ -d /dev/dri ]]; then
+    nspawn_arguments+=(--property="DeviceAllow=char-drm rwm" --bind=/dev/dri)
+fi
+if [[ -d /dev/snd ]]; then
+    nspawn_arguments+=(--property="DeviceAllow=char-alsa rwm" --bind=/dev/snd)
+fi
+if [[ -d /dev/input ]]; then
+    nspawn_arguments+=(--property="DeviceAllow=char-input rwm" --bind-ro=/dev/input)
+fi
+for backlight in /sys/class/backlight/*; do
+    if [[ -d "$backlight" ]]; then
+        device_path=$(readlink -f "$backlight")
+        nspawn_arguments+=(--bind="$device_path:$device_path")
+    fi
+done
+systemd-nspawn "${nspawn_arguments[@]}" "${guest_arguments[@]}"

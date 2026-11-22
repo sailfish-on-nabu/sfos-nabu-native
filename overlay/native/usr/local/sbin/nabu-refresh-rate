@@ -1,0 +1,97 @@
+#!/usr/bin/python3
+"""Apply the owner's narrowly validated display preference while panel is on."""
+import glob
+from pathlib import Path
+import pwd
+import re
+import subprocess
+import time
+
+KEY = "/desktop/nabu/display/refresh_rate"
+STATUS = "/desktop/nabu/display/refresh_rate_error"
+DFPS = Path("/sys/devices/platform/soc@0/ae00000.display-subsystem/ae94000.dsi/dfps")
+
+
+def main():
+    owner = pwd.getpwnam("defaultuser")
+    runtime = "/run/user/" + str(owner.pw_uid)
+    env = {"HOME": owner.pw_dir, "PATH": "/usr/bin:/bin", "LANG": "C",
+           "XDG_RUNTIME_DIR": runtime,
+           "DBUS_SESSION_BUS_ADDRESS": "unix:path=" + runtime + "/dbus/user_bus_socket"}
+    database = Path(owner.pw_dir) / ".config/dconf/user"
+
+    def dconf(*args):
+        result = subprocess.run(["/usr/bin/dconf", *args], env=env,
+                                user=owner.pw_uid, group=owner.pw_gid, extra_groups=[],
+                                text=True, capture_output=True, timeout=3)
+        if result.returncode:
+            raise RuntimeError(result.stderr.strip())
+        return result.stdout.strip()
+
+    def stamp():
+        try:
+            st = database.stat()
+            return st.st_ino, st.st_mtime_ns, st.st_size
+        except FileNotFoundError:
+            return None
+
+    # No shell, arbitrary paths, or privileged user-supplied commands are used.
+    last_stamp = object()
+    desired = None
+    applied = None
+    was_on = False
+    ready_at = 0.0
+    next_attempt = 0.0
+    last_error = None
+    while True:
+        try:
+            current_stamp = stamp()
+            if desired is None or current_stamp != last_stamp:
+                raw = dconf("read", KEY)
+                match = re.fullmatch(r"(?:(?:u?int(?:32|64)) )?(60|120)", raw)
+                if not raw:
+                    selected = 120
+                elif match:
+                    selected = int(match.group(1))
+                else:
+                    raise ValueError("Refresh rate must be 60 or 120")
+                if selected != desired:
+                    desired = selected
+                    applied = None
+                    next_attempt = 0.0
+                last_stamp = current_stamp
+
+            backlights = glob.glob("/sys/class/backlight/*/bl_power")
+            is_on = bool(backlights) and any(Path(p).read_text().strip() == "0" for p in backlights)
+            now = time.monotonic()
+            if is_on and not was_on:
+                # Let the panel init and compositor's mode commit finish first.
+                ready_at = now + 0.8
+                applied = None
+            if not is_on:
+                applied = None
+            was_on = is_on
+            if is_on and desired is not None and applied != desired and now >= max(ready_at, next_attempt):
+                next_attempt = now + 2.0
+                DFPS.write_text(str(desired) + "\n")
+                applied = desired
+                print("Applied display refresh rate: %d Hz" % desired, flush=True)
+                dconf("write", "/desktop/nabu/display/applied_refresh_rate", str(desired))
+                dconf("write", STATUS, "''")
+                last_error = None
+        except (OSError, RuntimeError, ValueError, subprocess.SubprocessError) as exc:
+            applied = None
+            message = str(exc)
+            if message != last_error:
+                print("Refresh rate deferred: " + message, flush=True)
+                last_error = message
+                try:
+                    # Fixed text; never interpolate exception strings into GVariant.
+                    dconf("write", STATUS, "'apply-failed'")
+                except (OSError, RuntimeError, subprocess.SubprocessError):
+                    pass
+        time.sleep(0.5)
+
+
+if __name__ == "__main__":
+    main()

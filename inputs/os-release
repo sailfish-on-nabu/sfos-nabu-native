@@ -1,0 +1,9 @@
+NAME="Sailfish OS"
+ID=sailfishos
+VERSION="5.3.0.15 (Tammela)"
+VERSION_ID=5.3.0.15
+PRETTY_NAME="Sailfish OS 5.3.0.15 (Tammela)"
+SAILFISH_BUILD=15
+SAILFISH_FLAVOUR=release
+HOME_URL="https://sailfishos.org/"
+SAILFISH_CUSTOMER="Jolla"

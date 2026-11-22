@@ -1,0 +1,7 @@
+NAME="Xiaomi Pad 5"
+ID=nabu
+MER_HA_DEVICE=nabu
+VERSION_ID=1
+PRETTY_NAME="Xiaomi Pad 5 (native Sailfish OS)"
+SAILFISH_DEVICE=nabu
+SAILFISH_DEVICE_TYPE=tablet

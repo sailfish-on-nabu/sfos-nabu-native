@@ -1,0 +1,38 @@
+#!/bin/sh
+set -eu
+card=
+for attempt in $(seq 1 120); do
+    for device in /sys/class/drm/card[0-9]*; do
+        name=$(basename "$device")
+        case "$name" in *-*) continue ;; esac
+        [ -e "$device/device/driver" ] || continue
+        driver=$(basename "$(readlink -f "$device/device/driver")")
+        case "$driver" in msm|msm_dpu|msm_mdp) ;; *) continue ;; esac
+        [ -c "/dev/dri/$name" ] || continue
+        # A GPU-only node has no display connectors.
+        output=
+        for connector in "$device"-*; do
+            [ -f "$connector/status" ] && output=yes && break
+        done
+        [ -n "$output" ] || continue
+        card=/dev/dri/$name
+        break
+    done
+    [ -n "$card" ] && break
+    if grep -aq 'linux,dummy-virt' /proc/device-tree/compatible; then
+        for device in /dev/dri/card[0-9]*; do
+            [ -c "$device" ] && card=$device && break
+        done
+    fi
+    [ -n "$card" ] && break
+    sleep 1
+done
+if [ -z "$card" ]; then
+    echo "No nabu display DRM node found. Expected msm_dpu, msm_mdp or msm with a display connector." >&2
+    ls -l /sys/class/drm /dev/dri >&2
+    exit 1
+fi
+printf '{"device":"%s","hwcursor":false}\n' "$card" > /run/nabu-eglfs.json.tmp
+chmod 0644 /run/nabu-eglfs.json.tmp
+mv /run/nabu-eglfs.json.tmp /run/nabu-eglfs.json
+echo "EGLFS display device selected: $card"

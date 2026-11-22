@@ -1,0 +1,12 @@
+[Unit]
+Description=Nabu SLPI sensor DSP filesystem service
+After=systemd-modules-load.service tqftpserv.service
+Wants=tqftpserv.service
+[Service]
+Type=simple
+ExecStart=/usr/local/sbin/nabu-hexagonrpcd
+Restart=always
+RestartSec=5
+StateDirectory=nabu-sensors
+[Install]
+WantedBy=multi-user.target

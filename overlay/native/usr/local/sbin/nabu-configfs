@@ -1,0 +1,16 @@
+#!/bin/sh
+set -eu
+mountpoint -q /sys/kernel/config || mount -t configfs configfs /sys/kernel/config
+gadget=/sys/kernel/config/usb_gadget/g1
+mkdir -p "$gadget"
+printf '0x18d1' > "$gadget/idVendor"
+printf '0xd001' > "$gadget/idProduct"
+mkdir -p "$gadget/strings/0x409"
+serial=$(cat /sys/firmware/devicetree/base/serial-number 2>/dev/null | tr -d '\000' || true)
+[ -n "$serial" ] || serial=nabu
+printf '%s' "$serial" > "$gadget/strings/0x409/serialnumber"
+printf 'Xiaomi' > "$gadget/strings/0x409/manufacturer"
+printf 'Pad 5 Sailfish OS' > "$gadget/strings/0x409/product"
+mkdir -p "$gadget/functions/ecm.usb0" "$gadget/functions/ffs.mtp" "$gadget/configs/b.1/strings/0x409"
+printf 'Sailfish OS' > "$gadget/configs/b.1/strings/0x409/configuration"
+# usb-moded chooses functions and binds the available UDC.

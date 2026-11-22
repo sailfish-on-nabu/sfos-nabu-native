@@ -1,0 +1,17 @@
+[
+  {
+    "repository": "https://github.com/sailfish-on-dontbeevil/droid-config-pinetab2.git",
+    "commit": "8713469b632f590cde12150444657856fd7e94b4",
+    "shallow": true
+  },
+  {
+    "repository": "https://github.com/piggz/droid-hal-configs.git",
+    "commit": "de2a8b49ab149ee74e84362aabf859621a50d190",
+    "shallow": true
+  },
+  {
+    "repository": "https://github.com/sailfish-on-dontbeevil/pinephonepro-image-maker.git",
+    "commit": "283324af776f699b95cbfbbe5756929ff287ca67",
+    "shallow": true
+  }
+]

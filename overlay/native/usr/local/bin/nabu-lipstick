@@ -1,0 +1,6 @@
+#!/bin/sh
+unset LD_PRELOAD SFOS_PARENT_WAYLAND_DISPLAY LIBGL_ALWAYS_SOFTWARE EGL_DRIVER
+export LD_LIBRARY_PATH=/usr/lib/sailfish-native
+export LIBGL_DRIVERS_PATH=/usr/lib/sailfish-native/dri
+export EGL_PLATFORM=drm
+exec /usr/bin/lipstick --systemd

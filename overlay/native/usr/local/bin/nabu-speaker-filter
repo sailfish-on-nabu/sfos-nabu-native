@@ -1,0 +1,46 @@
+#!/usr/bin/python3
+"""Apply the tested low-frequency workaround to the built-in speakers only."""
+import subprocess
+import time
+import re
+
+PHYSICAL = {
+    'alsa_output.platform-sound.HiFi__Speaker__sink',
+    'alsa_output.platform-sound.Speaker__Speaker__sink',
+}
+FILTER = 'nabu_speaker'
+
+def pactl(*args):
+    return subprocess.check_output(['pactl', *args], text=True).strip()
+
+for attempt in range(20):
+    rows = [line.split() for line in pactl('list', 'short', 'sinks').splitlines()]
+    physical = next((row for row in rows if len(row) > 1 and row[1] in PHYSICAL), None)
+    if physical:
+        break
+    time.sleep(0.5)
+else:
+    raise SystemExit('Built-in speaker unavailable; filter not loaded.')
+
+previous = pactl('get-default-sink')
+levels = re.findall(r':\s*(\d+)\s*/', pactl('get-sink-volume', physical[1]))
+if not levels:
+    raise SystemExit('Cannot read physical speaker volume; filter not loaded.')
+# LADSPA sinks share their master's volume. Device-restore can otherwise
+# restore the virtual sink at 100% when it is created. Preserve a lower
+# user level and cap startup at the tested approximately 16% while distortion is investigated.
+levels = [str(min(int(level), 10400)) for level in levels]
+if not any(len(row) > 1 and row[1] == FILTER for row in rows):
+    pactl('load-module', 'module-ladspa-sink', 'sink_name='+FILTER,
+          'sink_properties=device.description=Nabu_Speaker',
+          'master='+physical[1], 'plugin=nabu_highpass',
+          'label=nabu_speaker_highpass', 'rate=48000', 'channels=2')
+pactl('set-sink-volume', FILTER, *levels)
+if previous in PHYSICAL or previous in {FILTER, 'auto_null'}:
+    pactl('set-default-sink', FILTER)
+# Migrate existing app streams, excluding the filter's own master stream.
+for line in pactl('list', 'short', 'sink-inputs').splitlines():
+    row = line.split()
+    if len(row) > 3 and row[1] == physical[0] and row[3] != 'module-ladspa-sink.c':
+        pactl('move-sink-input', row[0], FILTER)
+print('Speaker filter ready: 200 Hz two-pole high-pass -> '+physical[1])

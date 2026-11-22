@@ -1,0 +1,8 @@
+#!/bin/sh
+export LD_PRELOAD=/usr/lib/sailfish-live/libwayland-parent.so
+export LD_LIBRARY_PATH=/usr/lib/sailfish-native
+export LIBGL_DRIVERS_PATH=/usr/lib/sailfish-native/dri
+if [ ! -e /dev/dri/renderD128 ]; then
+    export LIBGL_ALWAYS_SOFTWARE=1
+fi
+exec /usr/bin/lipstick --systemd

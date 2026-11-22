@@ -1,0 +1,11 @@
+[Unit]
+Description=Select nabu DRM device for EGLFS
+After=systemd-udev-trigger.service
+Before=systemd-user-sessions.service
+[Service]
+Type=oneshot
+TimeoutStartSec=130
+ExecStart=/usr/local/sbin/nabu-display-config
+RemainAfterExit=yes
+[Install]
+WantedBy=multi-user.target

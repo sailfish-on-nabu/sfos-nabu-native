@@ -1,0 +1,20 @@
+#!/bin/sh
+set -eu
+
+for attempt in $(seq 1 20); do
+    property=$(busctl --timeout=2s get-property org.bluez /org/bluez/hci0 org.bluez.Adapter1 Address 2>/dev/null) || property=
+    address=$(printf '%s\n' "$property" | sed -n 's/^s "\([[:xdigit:]:]*\)"$/\1/p')
+    if [ "$address" != 00:00:00:00:00:00 ] && printf '%s\n' "$address" | grep -Eq '^([[:xdigit:]]{2}:){5}[[:xdigit:]]{2}$'; then
+        # Keep pairing data private; allow Settings to traverse to this file only.
+        chmod 0711 /var/lib/bluetooth
+        temporary=$(mktemp /var/lib/bluetooth/.board-address.XXXXXX)
+        trap 'rm -f "$temporary"' EXIT
+        printf '%s\n' "$address" > "$temporary"
+        chmod 0644 "$temporary"
+        mv -f "$temporary" /var/lib/bluetooth/board-address
+        exit 0
+    fi
+    sleep 1
+done
+echo 'No valid BlueZ address for the built-in hci0 adapter' >&2
+exit 1

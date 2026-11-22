@@ -1,0 +1,41 @@
+#!/bin/sh
+# Run as root after reproducing the problem.
+echo '=== Kernel and drivers ==='
+uname -a
+lsmod
+echo '=== Firmware payload ==='
+ls -l /lib/firmware/ath10k/WCN3990/hw1.0/ /lib/firmware/qca/cr* /lib/firmware/qcom/sm8150/xiaomi/nabu/
+echo '=== Qualcomm remote processors ==='
+for processor in /sys/class/remoteproc/remoteproc*; do
+    [ -d "$processor" ] || continue
+    echo "$processor"
+    cat "$processor/name" "$processor/firmware" "$processor/state"
+done
+echo '=== Wi-Fi ==='
+ip -br link
+ls -l /sys/class/ieee80211 /sys/bus/platform/drivers/ath10k_snoc
+connmanctl technologies
+connmanctl services
+rfkill list
+echo '=== Bluetooth ==='
+ls -l /sys/class/bluetooth
+systemctl status bluetooth --no-pager
+bluetoothctl show
+echo '=== Sensors ==='
+ls -l /dev/fastrpc* /sys/bus/iio/devices
+systemctl status tqftpserv nabu-hexagonrpcd sensorfwd --no-pager
+qrtr-lookup
+echo '=== Device features and display ==='
+ssu-sysinfo --hw-features
+cat /usr/share/csd/settings.d/*hw-settings*.ini
+ls -l /sys/class/backlight
+for device in /sys/class/backlight/*; do
+    [ -d "$device" ] || continue
+    echo "$device"
+    cat "$device/brightness" "$device/max_brightness"
+done
+systemctl status mce --no-pager
+echo '=== Relevant journal ==='
+journalctl -b --no-pager | grep -Ei 'ath10k|wcn|wlan|bluetooth|btqca|hci[0-9]|remoteproc|qcom|qrtr|qmi|slpi|ssc|fastrpc|hexagon|sensor|mce|backlight|firmware' | tail -n 260
+echo '=== Kernel hardware messages ==='
+dmesg | grep -Ei 'ath10k|wcn|wlan|bluetooth|qca|hci|remoteproc|qcom|qrtr|qmi|slpi|ssc|fastrpc|sensor|firmware|defer' | tail -n 180

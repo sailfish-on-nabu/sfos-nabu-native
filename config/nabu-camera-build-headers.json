@@ -1,0 +1,34 @@
+{
+  "packages": [
+    {
+      "name": "libgstreamer1.0-dev_1.24.2-1ubuntu0.2_arm64.deb",
+      "url": "https://ports.ubuntu.com/ubuntu-ports/pool/main/g/gstreamer1.0/libgstreamer1.0-dev_1.24.2-1ubuntu0.2_arm64.deb",
+      "sha256": "8ba4770220f239e002514c28c4018912a7b87af0736b71a5107a172375ada3af"
+    },
+    {
+      "name": "libglib2.0-dev_2.80.0-6ubuntu3.10_arm64.deb",
+      "url": "https://ports.ubuntu.com/ubuntu-ports/pool/main/g/glib2.0/libglib2.0-dev_2.80.0-6ubuntu3.10_arm64.deb",
+      "sha256": "7cf6c28c1895d6843e901f68dd2d90be5a9280bfef70e1e8dfaa2096e14c13ad"
+    },
+    {
+      "name": "qtbase5-dev_5.15.3+dfsg-2ubuntu0.2_arm64.deb",
+      "url": "https://ports.ubuntu.com/ubuntu-ports/pool/universe/q/qtbase-opensource-src/qtbase5-dev_5.15.3+dfsg-2ubuntu0.2_arm64.deb",
+      "sha256": "1be2cdeed7b73fd5c5e3dd6b0bc537d374cf01ac6bd76215466ebee9cec54ac6"
+    },
+    {
+      "name": "qtmultimedia5-dev_5.15.3-1_arm64.deb",
+      "url": "https://ports.ubuntu.com/ubuntu-ports/pool/universe/q/qtmultimedia-opensource-src/qtmultimedia5-dev_5.15.3-1_arm64.deb",
+      "sha256": "e315f190fd359215fe35ce617ed23e62bbb3cc685897b19a91b18b221c8554bb"
+    },
+    {
+      "name": "g++-12-aarch64-linux-gnu_12.3.0-1ubuntu1~22.04.3cross1_amd64.deb",
+      "url": "https://archive.ubuntu.com/ubuntu/pool/universe/g/gcc-12-cross/g++-12-aarch64-linux-gnu_12.3.0-1ubuntu1~22.04.3cross1_amd64.deb",
+      "sha256": "566f7eda8237d919e9d374b20c33f0ada5cc4956beacc501f74c0a9ea98a0371"
+    },
+    {
+      "name": "libstdc++-12-dev-arm64-cross_12.3.0-1ubuntu1~22.04.3cross1_all.deb",
+      "url": "https://archive.ubuntu.com/ubuntu/pool/universe/g/gcc-12-cross/libstdc++-12-dev-arm64-cross_12.3.0-1ubuntu1~22.04.3cross1_all.deb",
+      "sha256": "5ab176164d8de13f076cc6fb94bd913ca2ab4e9324b2662bf426c9c7b375a870"
+    }
+  ]
+}

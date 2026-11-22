@@ -1,0 +1,42 @@
+#!/bin/sh
+# Native NT36523 gesture control; a complete matching panel/touch kernel is required.
+set -eu
+mode=--status
+[ "$#" -eq 0 ] || mode=$1
+case "$mode" in
+    --enable|--disable|--status) ;;
+    *) echo "Usage: nabu-doubletap --enable|--disable|--status" >&2; exit 2 ;;
+esac
+node=
+for attempt in $(seq 1 20); do
+    for candidate in /sys/bus/spi/devices/spi*/double_tap_wake; do
+        if [ -f "$candidate" ]; then node=$candidate; break; fi
+    done
+    [ -n "$node" ] && break
+    [ "$mode" = --status ] && break
+    sleep 0.5
+done
+if [ -z "$node" ]; then
+    echo 'NT36523 gesture interface unavailable; boot the double-tap kernel first.' >&2
+    exit 1
+fi
+directory=$(dirname "$node")
+ln -sfn "$node" /run/touchscreen_double_tap_wake
+case "$mode" in
+    --enable)
+        if [ "$(cat "$node")" != 1 ] || [ "$(cat "$directory/power/wakeup")" != enabled ]; then
+            echo 1 > "$node"
+        fi
+        /usr/sbin/mcetool --set-doubletap-mode=show-unlock-screen
+        /usr/sbin/mcetool --set-doubletap-wakeup=always
+        ;;
+    --disable)
+        if [ "$(cat "$node")" != 0 ] || [ "$(cat "$directory/power/wakeup")" != disabled ]; then
+            echo 0 > "$node"
+        fi
+        /usr/sbin/mcetool --set-doubletap-wakeup=never
+        ;;
+esac
+printf 'double_tap_wake='; cat "$node"
+printf 'gesture_active='; cat "$directory/gesture_active"
+printf 'power/wakeup='; cat "$directory/power/wakeup"

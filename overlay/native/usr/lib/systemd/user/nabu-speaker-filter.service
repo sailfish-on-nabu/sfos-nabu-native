@@ -1,0 +1,11 @@
+[Unit]
+Description=Nabu built-in speaker low-frequency filter
+Requires=pulseaudio.service
+Wants=nabu-audio-volume.service
+After=pulseaudio.service nabu-audio-volume.service
+PartOf=pulseaudio.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/nabu-speaker-filter

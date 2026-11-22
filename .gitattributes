@@ -1,0 +1,2 @@
+# Patch context must stay byte-for-byte intact, including its leading spaces.
+*.patch -whitespace

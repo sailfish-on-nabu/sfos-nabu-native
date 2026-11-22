@@ -1,0 +1,11 @@
+[Unit]
+Description=Qualcomm QRTR firmware transfer service
+After=systemd-modules-load.service
+ConditionPathExists=/proc/device-tree
+[Service]
+ExecStart=/usr/bin/tqftpserv
+Restart=on-failure
+RestartSec=3
+StateDirectory=tqftpserv
+[Install]
+WantedBy=multi-user.target

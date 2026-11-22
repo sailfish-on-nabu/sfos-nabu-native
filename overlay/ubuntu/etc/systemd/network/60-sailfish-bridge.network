@@ -1,0 +1,9 @@
+[Match]
+Name=sfos0
+
+[Network]
+Address=0.0.0.0/28
+ConfigureWithoutCarrier=yes
+IgnoreCarrierLoss=yes
+DHCPServer=yes
+IPMasquerade=ipv4

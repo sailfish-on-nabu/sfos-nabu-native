@@ -1,0 +1,30 @@
+# Images, build output, downloads and device debugging records.
+/dist/
+/work/
+/build/
+/downloads/
+/cache/
+__pycache__/
+*.py[cod]
+*.o
+*.ko
+*.so
+*.a
+*.cmd
+*.mod
+*.mod.c
+Module.symvers
+modules.order
+.tmp_versions/
+*.img
+*.rpm
+*.deb
+*.partial
+
+# Local credentials and editor files.
+.env
+.env.local
+*.pem
+*.key
+*.swp
+*~

@@ -1,0 +1,4 @@
+# Sailfish ngfd and Lipstick use PulseAudio's D-Bus volume interface.
+.ifexists module-dbus-protocol.so
+load-module module-dbus-protocol
+.endif

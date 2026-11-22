@@ -1,0 +1,15 @@
+#!/usr/bin/python3
+"""Insert the native refresh component without replacing the stock display page."""
+from pathlib import Path
+
+page = Path("/usr/share/jolla-settings/pages/display/display.qml")
+text = page.read_text()
+if "NabuRefreshRate {" not in text:
+    anchor = "            /*\n            TextSwitch {\n                automaticCheck: false\n                checked: displaySettings.lowPowerModeEnabled"
+    if text.count(anchor) != 1:
+        raise SystemExit("Display settings insertion anchor is missing or ambiguous")
+    backup = page.with_name("display.qml.before-nabu-refresh-rate")
+    if not backup.exists():
+        backup.write_text(text)
+    text = text.replace(anchor, "            NabuRefreshRate { }\n\n" + anchor, 1)
+    page.write_text(text)

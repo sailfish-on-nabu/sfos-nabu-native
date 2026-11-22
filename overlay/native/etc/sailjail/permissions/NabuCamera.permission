@@ -1,0 +1,7 @@
+# Native nabu camera configuration and trusted graphics libraries.
+private-etc nabu-camera.conf
+private-etc xdg/QtProject/Sensors.conf
+env LD_LIBRARY_PATH=/usr/lib/sailfish-native
+env LD_PRELOAD=/usr/lib/sailfish-native/libnabu-qtcamera.so
+env QT_GSTREAMER_CAMERABIN_SRC=wrappercamerabinsrc
+env QT_GSTREAMER_CAMERABIN_VIDEOSRC=nabucamerasrc

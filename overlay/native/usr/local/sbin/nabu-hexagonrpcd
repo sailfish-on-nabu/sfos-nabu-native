@@ -1,0 +1,17 @@
+#!/bin/sh
+set -eu
+grep -aq 'xiaomi,nabu' /proc/device-tree/compatible || exit 0
+for attempt in $(seq 1 90); do
+    [ -c /dev/fastrpc-sdsp ] && break
+    sleep 1
+done
+[ -c /dev/fastrpc-sdsp ] || {
+    echo 'SLPI FastRPC device /dev/fastrpc-sdsp has not appeared' >&2
+    exit 1
+}
+if [ ! -f /var/lib/nabu-sensors/.initialized ]; then
+    mkdir -p /var/lib/nabu-sensors
+    cp -a /usr/share/qcom/sm8150/xiaomi/nabu/. /var/lib/nabu-sensors/
+    touch /var/lib/nabu-sensors/.initialized
+fi
+exec /usr/bin/hexagonrpcd -f /dev/fastrpc-sdsp -d sdsp -s -R /var/lib/nabu-sensors

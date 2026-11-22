@@ -1,0 +1,10 @@
+{
+  "repository": "https://github.com/alsa-project/alsa-ucm-conf",
+  "tag": "v1.2.13",
+  "commit": "fcb7a6f2e0ef869969a746e0220700577cc0eba7",
+  "files": [
+    "ucm2/ucm.conf",
+    "ucm2/lib/generic.conf"
+  ],
+  "license": "BSD-3-Clause"
+}

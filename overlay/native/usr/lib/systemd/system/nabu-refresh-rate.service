@@ -1,0 +1,13 @@
+[Unit]
+Description=Apply saved nabu display refresh rate
+After=nabu-display-config.service mce.service
+ConditionPathExists=/sys/devices/platform/soc@0/ae00000.display-subsystem/ae94000.dsi/dfps
+
+[Service]
+Type=simple
+ExecStart=/usr/local/sbin/nabu-refresh-rate
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

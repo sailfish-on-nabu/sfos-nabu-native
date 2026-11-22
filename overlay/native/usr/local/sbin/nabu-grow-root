@@ -1,0 +1,7 @@
+#!/bin/sh
+set -eu
+device=$(findmnt -n -o SOURCE /)
+[ -b "$device" ]
+resize2fs "$device"
+mkdir -p /var/lib/nabu
+touch /var/lib/nabu/root-expanded

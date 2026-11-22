@@ -1,0 +1,12 @@
+[Unit]
+Description=Nabu Qualcomm remote filesystem service
+After=systemd-modules-load.service tqftpserv.service
+Wants=tqftpserv.service
+Before=connman.service
+ConditionPathExists=/dev/qcom_rmtfs_mem1
+[Service]
+ExecStart=/usr/bin/rmtfs -r -P -s
+Restart=always
+RestartSec=3
+[Install]
+WantedBy=multi-user.target

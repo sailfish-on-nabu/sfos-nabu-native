@@ -1,0 +1,31 @@
+#!/usr/bin/python3
+"""Initialize the speaker gain once; later user volume changes remain saved."""
+
+from pathlib import Path
+import subprocess
+import time
+
+sinks = {
+    'alsa_output.platform-sound.HiFi__Speaker__sink',
+    'alsa_output.platform-sound.Speaker__Speaker__sink',
+}
+marker = Path.home() / '.local/state/nabu/audio-volume-initialized'
+if not marker.exists():
+    for attempt in range(10):
+        result = subprocess.run(['pactl', 'list', 'short', 'sinks'],
+                                capture_output=True, text=True)
+        available = [fields[1] for line in result.stdout.splitlines()
+                     if len(fields := line.split()) > 1 and fields[1] in sinks]
+        if result.returncode == 0 and available:
+            sink = available[0]
+            # Do not compensate amplifier attenuation by raising the host
+            # level: music distorted at 39134 on the debug device. Keep the
+            # tested lower host level; amplifier tuning is independent.
+            subprocess.run(['pactl', 'set-sink-volume', sink, '10400'], check=True)
+            marker.parent.mkdir(parents=True, exist_ok=True)
+            marker.write_text('hardware=-36dB software=10400\n')
+            print('Initialized nabu speaker volume with amplifier attenuation.')
+            break
+        time.sleep(1)
+    else:
+        print('Nabu speaker sink unavailable; volume initialization deferred.')

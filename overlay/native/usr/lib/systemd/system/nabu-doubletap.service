@@ -1,0 +1,16 @@
+[Unit]
+Description=Enable native nabu double-tap wake to the lock screen
+Wants=mce.service
+After=mce.service systemd-udev-trigger.service
+ConditionPathExistsGlob=/sys/bus/spi/devices/spi*/double_tap_wake
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/nabu-doubletap --enable
+ExecStop=/usr/local/sbin/nabu-doubletap --disable
+TimeoutStartSec=20
+TimeoutStopSec=20
+
+[Install]
+WantedBy=multi-user.target

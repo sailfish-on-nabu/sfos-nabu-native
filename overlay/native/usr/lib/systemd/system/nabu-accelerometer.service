@@ -1,0 +1,16 @@
+[Unit]
+Description=Nabu SSC accelerometer bridge
+Wants=nabu-hexagonrpcd.service
+After=nabu-hexagonrpcd.service
+Before=sensorfwd.service
+ConditionPathExists=/dev/uinput
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/python3 /usr/libexec/nabu-sensors/ssc-accelerometer.py
+Restart=on-failure
+RestartSec=3
+TimeoutStartSec=40
+
+[Install]
+WantedBy=multi-user.target

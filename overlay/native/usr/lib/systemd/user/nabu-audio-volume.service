@@ -1,0 +1,9 @@
+[Unit]
+Description=Initialize the native nabu speaker volume
+Requires=pulseaudio.service
+After=pulseaudio.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/nabu-audio-volume

@@ -1,0 +1,4 @@
+# Seed valid restore entries for the native route's volume proxies.
+sink-input-by-media-role:x-maemo -40
+sink-input-by-media-role:phone -40
+sink-input-by-media-role:voip -40

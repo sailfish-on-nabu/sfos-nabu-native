@@ -1,0 +1,6 @@
+# MainVolume2 drives the Sailfish media slider and volume keys.
+# Its volume proxy requires the Nemo stream-restore implementation.
+unload-module module-stream-restore
+load-module module-meego-parameters directory=/etc/pulse/nabu-parameters initial_mode=speaker use_voice=false
+load-module module-stream-restore-nemo
+load-module module-meego-mainvolume

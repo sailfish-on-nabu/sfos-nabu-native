@@ -1,0 +1,1 @@
+SUBSYSTEM=="input", KERNEL=="event*", ATTRS{name}=="nabu-accelerometer", SYMLINK+="input/nabu-accelerometer", MODE="0640"

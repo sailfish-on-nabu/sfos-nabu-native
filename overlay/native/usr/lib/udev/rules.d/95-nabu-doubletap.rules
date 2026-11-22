@@ -1,0 +1,1 @@
+ACTION=="add|bind|change", SUBSYSTEM=="spi", DRIVER=="NVT-ts-spi", TEST=="double_tap_wake", RUN+="/bin/ln -sfn /sys%p/double_tap_wake /run/touchscreen_double_tap_wake"

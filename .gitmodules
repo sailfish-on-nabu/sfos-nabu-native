@@ -1,0 +1,81 @@
+[submodule "source/linux"]
+	path = source/linux
+	shallow = true
+	url = https://github.com/sailfish-on-nabu/linux-nabu-native.git
+	branch = native
+
+[submodule "source/reference/alsa-ucm-conf"]
+	path = source/reference/alsa-ucm-conf
+	shallow = true
+	url = https://github.com/alsa-project/alsa-ucm-conf.git
+
+[submodule "source/reference/droid-config-pinetab2"]
+	path = source/reference/droid-config-pinetab2
+	shallow = true
+	url = https://github.com/sailfish-on-dontbeevil/droid-config-pinetab2.git
+
+[submodule "source/reference/droid-hal-configs"]
+	path = source/reference/droid-hal-configs
+	shallow = true
+	url = https://github.com/piggz/droid-hal-configs.git
+
+[submodule "source/reference/hexagonrpc"]
+	path = source/reference/hexagonrpc
+	shallow = true
+	url = https://github.com/linux-msm/hexagonrpc.git
+	ignore = dirty
+
+[submodule "source/reference/mce"]
+	path = source/reference/mce
+	shallow = true
+	url = https://github.com/sailfishos/mce.git
+
+[submodule "source/reference/pinephonepro-image-maker"]
+	path = source/reference/pinephonepro-image-maker
+	shallow = true
+	url = https://github.com/sailfish-on-dontbeevil/pinephonepro-image-maker.git
+
+[submodule "source/reference/qrtr"]
+	path = source/reference/qrtr
+	shallow = true
+	url = https://github.com/linux-msm/qrtr.git
+
+[submodule "source/reference/qtwayland"]
+	path = source/reference/qtwayland
+	shallow = true
+	url = https://github.com/sailfish-on-dontbeevil/qtwayland.git
+
+[submodule "source/reference/rmtfs"]
+	path = source/reference/rmtfs
+	shallow = true
+	url = https://github.com/linux-msm/rmtfs.git
+
+[submodule "source/reference/sensorfw"]
+	path = source/reference/sensorfw
+	shallow = true
+	url = https://github.com/sailfishos/sensorfw.git
+
+[submodule "source/reference/ssu"]
+	path = source/reference/ssu
+	shallow = true
+	url = https://github.com/sailfishos/ssu.git
+
+[submodule "source/reference/ssu-sysinfo"]
+	path = source/reference/ssu-sysinfo
+	shallow = true
+	url = https://github.com/sailfishos/ssu-sysinfo.git
+
+[submodule "source/reference/systemsettings"]
+	path = source/reference/systemsettings
+	shallow = true
+	url = https://github.com/sailfishos/nemo-qml-plugin-systemsettings.git
+
+[submodule "source/reference/tqftpserv"]
+	path = source/reference/tqftpserv
+	shallow = true
+	url = https://github.com/linux-msm/tqftpserv.git
+
+[submodule "source/reference/usb-moded"]
+	path = source/reference/usb-moded
+	shallow = true
+	url = https://github.com/sailfishos/usb-moded.git

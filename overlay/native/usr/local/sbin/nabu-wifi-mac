@@ -1,0 +1,66 @@
+#!/usr/bin/python3
+"""Prepare a stable per-device Wi-Fi address before udev initializes links."""
+
+import argparse
+import hashlib
+import os
+from pathlib import Path
+import re
+
+STATE = Path('/var/lib/nabu/wifi-mac-address')
+LINK = Path('/run/systemd/network/10-nabu-wifi.link')
+
+
+def valid_mac(value):
+    return (re.fullmatch(r'(?:[0-9a-f]{2}:){5}[0-9a-f]{2}', value) is not None
+            and value != '00:00:00:00:00:00'
+            and not int(value[:2], 16) & 1)
+
+
+def generated_mac(identity):
+    value = bytearray(hashlib.sha256(b'nabu-wifi-v1:' + identity).digest()[:6])
+    value[0] = (value[0] | 2) & 0xfe
+    return ':'.join(f'{byte:02x}' for byte in value)
+
+
+def write_atomic(path, text, mode):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(path.name + '.tmp')
+    temporary.write_text(text)
+    temporary.chmod(mode)
+    temporary.replace(path)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--seed-current', action='store_true',
+                        help='preserve the currently connected wlan0 address on first installation')
+    args = parser.parse_args()
+    os.umask(0o077)
+    if STATE.exists():
+        mac = STATE.read_text().strip().lower()
+        if not valid_mac(mac):
+            raise ValueError('Invalid saved Wi-Fi MAC address in ' + str(STATE))
+    elif args.seed_current:
+        mac = Path('/sys/class/net/wlan0/address').read_text().strip().lower()
+        if not valid_mac(mac):
+            raise ValueError('Invalid current Wi-Fi MAC address')
+        write_atomic(STATE, mac + '\n', 0o600)
+    else:
+        for path in (Path('/sys/devices/soc0/serial_number'), Path('/etc/machine-id')):
+            if path.exists():
+                identity = path.read_bytes().strip()
+                if identity and set(identity) != {ord('0')}:
+                    mac = generated_mac(identity)
+                    break
+        else:
+            raise RuntimeError('No persistent device identity is available')
+        write_atomic(STATE, mac + '\n', 0o600)
+    write_atomic(LINK, '[Match]\nPath=platform-18800000.wifi\n\n'
+                 '[Link]\nNamePolicy=kernel\nMACAddressPolicy=none\n'
+                 'MACAddress=' + mac + '\n', 0o644)
+    print('Prepared stable nabu Wi-Fi MAC address: ' + mac)
+
+
+if __name__ == '__main__':
+    main()

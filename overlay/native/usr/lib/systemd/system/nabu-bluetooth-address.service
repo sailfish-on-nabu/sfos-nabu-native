@@ -1,0 +1,14 @@
+[Unit]
+Description=Publish the built-in Bluetooth address for Sailfish Settings
+After=bluetooth.service
+Requisite=bluetooth.service
+PartOf=bluetooth.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/nabu-bluetooth-address
+TimeoutStartSec=70
+RemainAfterExit=yes
+
+[Install]
+WantedBy=bluetooth.service

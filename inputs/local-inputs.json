@@ -1,0 +1,18 @@
+[
+  {
+    "path": "/home/bird/data/hadk_18.1/SailfishOScommunity-release-5.3.0.15-nabu-alpha1/Jolla-5.3.0.15-nabu-aarch64.packages",
+    "sha256": "2163e193c37f02097117c8ff4866be1358ac8fb4e4ecf4fb3eab1f2be71ef7c5"
+  },
+  {
+    "path": "/home/bird/data/hadk_18.1/SailfishOScommunity-release-5.3.0.15-nabu-alpha1/Jolla-5.3.0.15-nabu-aarch64.urls",
+    "sha256": "0bcd678e770ed872f87e617addba218bd60ade5fc844bd3b74c7b1719aa7c81e"
+  },
+  {
+    "path": "/home/bird/data/hadk_18.1/SailfishOScommunity-release-5.3.0.15-nabu-alpha1/Jolla-5.3.0.15-nabu-aarch64.ks",
+    "sha256": "debb5bd27d910203672523be91e25846f88c6d52035b48de247c0cfaaf149591"
+  },
+  {
+    "path": "/home/bird/data/hadk_18.1/SailfishOScommunity-release-5.3.0.15-nabu-alpha1/os-release",
+    "sha256": "90846f63bf23df474411ab1b673a878ed3f08dc605977fe30149b0213be47b89"
+  }
+]
