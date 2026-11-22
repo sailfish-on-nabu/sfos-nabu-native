@@ -96,8 +96,13 @@ the original mapped-library directory is retained at
 `/usr/lib/sailfish-native.old-20261122-020353`. Diagnostic logs and rollback
 scripts are preserved under `work/graphics-20261122T020353Z/` on the build host.
 
-The existing `5.3.0.21-native-20261122` release ZIP predates this graphics fix.
-A new image build and release are required to distribute the updated libraries.
+The `5.3.0.21-native-20261122` release is refreshed in place with this graphics
+fix. The rebuilt images passed boot-payload checks, sparse/raw comparison and
+checks of 114 embedded adaptation and graphics files. The image's loader cache
+resolves all six graphics SONAMEs through the corrected native bundle. The ZIP
+contains the sparse rootfs, matching v0/v3 boot images, English flashing
+instructions and checksums. The complete refreshed image has not been flashed
+and booted on the physical tablet.
 
 Upstream option reference:
 [Mesa 25.2.8 meson.options](https://gitlab.freedesktop.org/mesa/mesa/-/blob/mesa-25.2.8/meson.options).

@@ -5,8 +5,8 @@
 2026-11-22 后续已修复应用端 GPU 渲染：Mesa 启用 Qt 5.6 所需的旧 Wayland
 共享缓冲接口，并通过库缓存让会话预加载器与桌面使用同一套图形库。
 真机同一滚动场景从 13.98 FPS 提升到 60.01 FPS，用户确认应用内非常流畅。
-修正已部署真机并接入源码构建；现有 `dist/` 和已发布的
-`5.3.0.21-native-20261122` 刷机包尚未包含这次后续修正。
+修正已部署真机并接入源码构建；`dist/` 已重新构建，
+`5.3.0.21-native-20261122` release 的刷机包也更新为包含此修正的版本。
 实现与验证见 [原生图形说明](source/nabu-graphics/README.md)。
 
 图形配置参考 Sailfish on Don't Be Evil 的 PineTab2 适配。Lipstick 使用 Qt EGLFS/KMS，应用通过 Lipstick 的 Wayland 服务显示，应用端 Qt 平台使用 `wayland`。Mesa 核心由固定版本源码构建，GLVND 前端及依赖沿用已验证的 Ubuntu arm64 库，随原生 RPM 安装在 `/usr/lib/sailfish-native`。
