@@ -11,7 +11,8 @@ if [[ ! -f "$work/build/native-root.complete" ]]; then
     tar --numeric-owner --exclude='./dev/*' -xpf "$original/sfe-nabu-5.3.0.15-alpha1.tar.bz2" -C "$guest"
     touch "$work/build/native-root.complete"
 fi
-python3 "$project/scripts/copy-native-mesa.py" "$work/build/ubuntu-root" "$guest"
+python3 "$project/scripts/build-native-mesa.py" "$project" "$work"
+python3 "$project/scripts/copy-native-mesa.py" "$work/build/ubuntu-root" "$guest" "$work/build/native-mesa/payload"
 SFOS_GUEST_ROOT="$guest" bash "$project/scripts/build-native-runtime.sh" "$project" "$work"
 bash "$project/scripts/build-nabu-package.sh" "$project" "$work"
 cp "$project/dist/sfos-mainline-runtime-$image_version-1.aarch64.rpm" "$guest/tmp/"

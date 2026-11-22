@@ -12,7 +12,8 @@ Provides: pulseaudio-settings
 %global __os_install_post %{nil}
 
 %description
-Native Mesa EGL, GLES and DRM libraries from Ubuntu Base, with the generic
+Native Mesa EGL, GLES and DRM libraries with legacy Wayland buffer sharing,
+Ubuntu Base GLVND frontends and dependencies, with the generic
 policy, network, Bluetooth, sensor and USB configuration used by this mainline image.
 
 %install
@@ -41,3 +42,4 @@ cp -a %{runtime_payload}/. %{buildroot}/
 %config(noreplace) /etc/sensorfw/primaryuse.conf
 %config(noreplace) /etc/sysconfig/pulseaudio
 %config(noreplace) /etc/connman/main-native.conf
+%config(noreplace) /etc/ld.so.conf.d/00-000-nabu-native-graphics.conf

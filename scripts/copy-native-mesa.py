@@ -48,6 +48,34 @@ default_driver_directory.parent.mkdir(parents=True, exist_ok=True)
 if not default_driver_directory.exists() and not default_driver_directory.is_symlink():
     default_driver_directory.symlink_to("/usr/lib/sailfish-native/dri")
 print("Copied", len(copied), "native graphics libraries")
+if len(sys.argv) > 3:
+    native_payload = pathlib.Path(sys.argv[3])
+    for source in sorted(native_payload.rglob('*')):
+        target = destination / source.relative_to(native_payload)
+        if source.is_dir() and not source.is_symlink():
+            target.mkdir(parents=True, exist_ok=True)
+        else:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            if target.is_symlink():
+                target.unlink()
+            if source.is_symlink():
+                target.unlink(missing_ok=True)
+                target.symlink_to(source.readlink())
+            else:
+                shutil.copy2(source, target)
+    print("Installed Mesa with legacy Wayland buffer sharing")
+
+# The early session booster is setgid and ignores LD_LIBRARY_PATH. Resolve
+# graphics SONAMEs through ld.so.cache before it preloads Qt/GLES libraries.
+graphics = destination / 'graphics'
+graphics.mkdir(exist_ok=True)
+names = ['libEGL.so.1', 'libEGL_mesa.so.0', 'libGLESv2.so.2', 'libgbm.so.1', 'libGLdispatch.so.0']
+if len(sys.argv) > 3:
+    names.extend(p.name for p in native_payload.glob('libgallium-*.so'))
+for name in names:
+    link = graphics / name
+    link.unlink(missing_ok=True)
+    link.symlink_to('../' + name)
 default_gbm_directory = guest / "usr/lib/aarch64-linux-gnu/gbm"
 if not default_gbm_directory.exists() and not default_gbm_directory.is_symlink():
     default_gbm_directory.symlink_to("/usr/lib/sailfish-native/gbm")
